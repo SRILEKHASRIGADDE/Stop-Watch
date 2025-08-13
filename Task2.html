@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quiz Game Application</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .quiz-container {
+      background: #2b2b3c;
+      padding: 30px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .option {
+      margin: 10px 0;
+    }
+
+    .option input {
+      margin-right: 10px;
+    }
+
+    #submit {
+      background: #00bcd4;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #score {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2 id="question">Question Text</h2>
+    <div class="option"><input type="radio" name="answer" id="a" /><label for="a" id="a_text">Option A</label></div>
+    <div class="option"><input type="radio" name="answer" id="b" /><label for="b" id="b_text">Option B</label></div>
+    <div class="option"><input type="radio" name="answer" id="c" /><label for="c" id="c_text">Option C</label></div>
+    <div class="option"><input type="radio" name="answer" id="d" /><label for="d" id="d_text">Option D</label></div>
+    <button id="submit">Submit</button>
+    <div id="score"></div>
+  </div>
+
+  <script>
+    const quizData = [
+  {
+    question: "What is the capital of India?",
+    a: "Mumbai",
+    b: "Chennai",
+    c: "New Delhi",
+    d: "Kolkata",
+    correct: "c"
+  },
+  {
+    question: "Who is known as the father of the world wide web?",
+    a: "Bill Gates",
+    b: "Steve Jobs",
+    c: "Larry Page",
+    d: "Tim Berners-Lee",
+    correct: "d"
+  },
+  {
+    question: "Which HTML tag is used to insert an image?",
+    a: "<pic>",
+    b: "<image>",
+    c: "<img>",
+    d: "<src>",
+    correct: "c"
+  },
+  {
+    question: "Which of the following is a cloud storage service?",
+    a: "Dropbox",
+    b: "Firefox",
+    c: "Whatsapp",
+    d: "VLC",
+    correct: "a"
+  },
+  {
+    question: "Which of the following is a type of malware?",
+    a: "Firewall",
+    b: "Antivirus",
+    c: "Trojan horse",
+    d: "Router",
+    correct: "c"
+  },
+  {
+    question: "AI stands for?",
+    a: "Automated Interface",
+    b: "Artificial Intelligence",
+    c: "Advanced Integration",
+    d: "Analog Input",
+    correct: "b"
+  }
+];
+
+
+    const questionEl = document.getElementById("question");
+    const a_text = document.getElementById("a_text");
+    const b_text = document.getElementById("b_text");
+    const c_text = document.getElementById("c_text");
+    const d_text = document.getElementById("d_text");
+    const submitBtn = document.getElementById("submit");
+    const scoreEl = document.getElementById("score");
+    const answers = document.getElementsByName("answer");
+
+    let currentQuiz = 0;
+    let score = 0;
+
+    function loadQuiz() {
+      deselectAnswers();
+      const currentData = quizData[currentQuiz];
+      questionEl.textContent = currentData.question;
+      a_text.textContent = currentData.a;
+      b_text.textContent = currentData.b;
+      c_text.textContent = currentData.c;
+      d_text.textContent = currentData.d;
+    }
+
+    function getSelected() {
+      let answer = undefined;
+      answers.forEach((ans) => {
+        if (ans.checked) {
+          answer = ans.id;
+        }
+      });
+      return answer;
+    }
+
+    function deselectAnswers() {
+      answers.forEach((ans) => ans.checked = false);
+    }
+
+    submitBtn.addEventListener("click", () => {
+      const answer = getSelected();
+      if (answer) {
+        if (answer === quizData[currentQuiz].correct) {
+          score++;
+        }
+        currentQuiz++;
+        if (currentQuiz < quizData.length) {
+          loadQuiz();
+        } else {
+          scoreEl.innerHTML = `<h3>You answered ${score} out of ${quizData.length} correctly.</h3>
+          <button onclick="location.reload()">Play Again</button>`;
+          document.querySelector(".quiz-container").innerHTML = scoreEl.innerHTML;
+        }
+      } else {
+        alert("Please select an answer!");
+      }
+    });
+
+    loadQuiz();
+  </script>
+</body>
+</html>
