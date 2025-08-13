@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do Web App</title>
+  <style>
+    body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #e0f7fa; 
+  color: #ffffff;
+  padding: 2rem;
+}
+
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .todo-container {
+  max-width: 600px;
+  margin: auto;
+  background: #fff; /* ← Change this */
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+    input, button {
+      padding: 0.6rem;
+      margin: 0.3rem 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    input[type="text"], input[type="datetime-local"] {
+      width: calc(100% - 1.2rem);
+      margin-bottom: 0.8rem;
+    }
+
+    button {
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .task-card {
+      background: #f0f0f0;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      border-left: 5px solid #007bff;
+    }
+
+    .task-header {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .task-time {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .task-actions button {
+      flex: 1;
+      font-size: 0.9rem;
+    }
+
+    .completed .task-header {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .completed {
+      background-color: #e0e0e0;
+      border-left-color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 To-Do List</h1>
+  <div class="todo-container">
+    <input type="text" id="taskInput" placeholder="Enter task..." />
+    <input type="datetime-local" id="taskTime" />
+    <button onclick="addTask()">Add Task</button>
+    <div id="taskList"></div>
+  </div>
+
+  <script>
+    let tasks = [];
+
+    function addTask() {
+      const taskText = document.getElementById('taskInput').value;
+      const taskTime = document.getElementById('taskTime').value;
+
+      if (!taskText.trim()) {
+        alert("Please enter a task name.");
+        return;
+      }
+
+      const task = {
+        id: Date.now(),
+        text: taskText,
+        time: taskTime,
+        completed: false
+      };
+
+      tasks.push(task);
+      renderTasks();
+
+      document.getElementById('taskInput').value = '';
+      document.getElementById('taskTime').value = '';
+    }
+
+    function toggleComplete(id) {
+      tasks = tasks.map(task =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      );
+      renderTasks();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(task => task.id !== id);
+      renderTasks();
+    }
+
+    function editTask(id) {
+      const newText = prompt("Edit your task:");
+      if (newText) {
+        tasks = tasks.map(task =>
+          task.id === id ? { ...task, text: newText } : task
+        );
+        renderTasks();
+      }
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+
+      tasks.forEach(task => {
+        const taskCard = document.createElement('div');
+        taskCard.className = 'task-card' + (task.completed ? ' completed' : '');
+
+        taskCard.innerHTML = `
+          <div class="task-header">${task.text}</div>
+          <div class="task-time">${task.time ? new Date(task.time).toLocaleString() : 'No time set'}</div>
+          <div class="task-actions">
+            <button onclick="toggleComplete(${task.id})">${task.completed ? 'Undo' : 'Done'}</button>
+            <button onclick="editTask(${task.id})">Edit</button>
+            <button onclick="deleteTask(${task.id})">Delete</button>
+          </div>
+        `;
+        taskList.appendChild(taskCard);
+      });
+    }
+  </script>
+</body>
+</html>
