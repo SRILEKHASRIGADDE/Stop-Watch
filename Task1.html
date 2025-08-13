@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stopwatch Web App</title>
+  <table id="lapsTable">
+  <thead><tr><th>#</th><th>Lap Time</th></tr></thead>
+  <tbody></tbody>
+</table>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: rgb(18, 18, 18);
+      color: rgb(255, 255, 255);
+      text-align: center;
+      padding: 40px;
+    }
+
+    .container {
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 12px;
+      width: 300px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .timer {
+      font-size: 48px;
+      margin: 20px 0;
+    }
+
+    .buttons button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: hwb(327 0% 8%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .buttons button:hover {
+      background-color: #b30092;
+    }
+
+    #laps {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⏱ Stopwatch</h1>
+    <div class="timer" id="display">00:00:00</div>
+    <div class="buttons">
+      <button onclick="startStop()">Start</button>
+      <button onclick="pause()">Pause</button>
+      <button onclick="reset()">Reset</button>
+      <button onclick="lap()">Lap</button>
+    </div>
+    <ul id="laps"></ul>
+  </div>
+
+  <script>
+    let startTime = 0;
+    let elapsedTime = 0;
+    let timerInterval;
+    let running = false;
+
+    function timeToString(time) {
+      let hrs = Math.floor(time / 3600000);
+      let mins = Math.floor((time % 3600000) / 60000);
+      let secs = Math.floor((time % 60000) / 1000);
+      return (
+        (hrs < 10 ? "0" + hrs : hrs) + ":" +
+        (mins < 10 ? "0" + mins : mins) + ":" +
+        (secs < 10 ? "0" + secs : secs)
+      );
+    }
+
+    function startStop() {
+      if (!running) {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(() => {
+          elapsedTime = Date.now() - startTime;
+          document.getElementById("display").textContent = timeToString(elapsedTime);
+        }, 1000);
+        running = true;
+      }
+    }
+
+    function pause() {
+      clearInterval(timerInterval);
+      running = false;
+    }
+
+    function reset() {
+      clearInterval(timerInterval);
+      document.getElementById("display").textContent = "00:00:00";
+      document.getElementById("laps").innerHTML = "";
+      elapsedTime = 0;
+      running = false;
+    }
+
+    function lap() {
+  if (running) {
+    const lapTime = timeToString(elapsedTime);
+    const li = document.createElement("li");
+    li.textContent = `Lap: ${lapTime}`;
+    document.getElementById("laps").appendChild(li);
+  }
+
+function lap() {
+  if (running) {
+    const lapTime = timeToString(elapsedTime);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${lapCount++}</td><td>${lapTime}</td>`;
+    document.querySelector("#lapsTable tbody").appendChild(tr);
+
+    // Speak the lap time
+    const utterance = new SpeechSynthesisUtterance(`Lap recorded at ${lapTime}`);
+    speechSynthesis.speak(utterance);
+  }
+}
+
+
+}
+  </script>
+</body>
+</html>
